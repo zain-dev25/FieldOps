@@ -39,12 +39,12 @@ app.use(
     },
     credentials: true,
   })
-);
+);  
 
 app.use(express.json());
 
 // ── Health check ──────────────────────────────────────────────────────────────
-app.get('/api/health', (req, res) => {
+app.get('/', (req, res) => {
   res.json({ status: 'API is running...', env: process.env.NODE_ENV || 'development' });
 });
 
