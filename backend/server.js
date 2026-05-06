@@ -23,23 +23,25 @@ const app = express();
 // ── CORS ──────────────────────────────────────────────────────────────────────
 // Development: http://localhost:5173
 // Production : set CORS_ORIGIN=https://your-frontend.vercel.app in Vercel env vars
-const allowedOrigins = process.env.CORS_ORIGIN
-  ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-  : ['http://localhost:5173'];
+// const allowedOrigins = process.env.CORS_ORIGIN
+//   ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
+//   : ['http://localhost:5173'];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (Postman, mobile apps, server-to-server)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
-        return callback(null, true);
-      }
-      callback(new Error(`CORS: origin ${origin} not allowed`));
-    },
-    credentials: true,
-  })
-);  
+//   console.log('Allowed CORS origins:', allowedOrigins);
+
+// app.use(
+//   cors({
+//     origin: (origin, callback) => {
+//       // Allow requests with no origin (Postman, mobile apps, server-to-server)
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+//         return callback(null, true);
+//       }
+//       callback(new Error(`CORS: origin ${origin} not allowed`));
+//     },
+//     credentials: true,
+//   })
+// );  
 
 app.use(express.json());
 

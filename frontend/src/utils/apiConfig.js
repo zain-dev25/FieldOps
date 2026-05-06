@@ -2,10 +2,10 @@ import axios from 'axios';
 
 // ─── Base URL ────────────────────────────────────────────────────────────────
 // Development  → uses Vite's proxy (empty string → relative /api/...)
-// Production   → set VITE_API_BASE_URL=https://your-api.com in .env
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_URL;
-
-console.log(API_BASE_URL)
+// Production   → set VITE_API_BASE_URL=https://your-api.com in Vercel env vars
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+    ? import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_DEV_URL || ''
+    : '';
 
 // ─── Axios Instance ───────────────────────────────────────────────────────────
 const api = axios.create({
