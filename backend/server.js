@@ -20,7 +20,7 @@ connectDB();
 
 const app = express();
 
-// CORS configuration: Allow all origins for simplicity (adjust in production) 
+// CORS configuration: Allow all origins for simplicity (adjust in production)           
 app.use(cors({
   origin: '*',
   credentials: true,

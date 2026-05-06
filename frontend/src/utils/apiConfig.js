@@ -1,16 +1,16 @@
 import axios from 'axios';
 
+
 // ─── Base URL ────────────────────────────────────────────────────────────────
 // Development  → uses Vite's proxy (empty string → relative /api/...)
 // Production   → set VITE_API_BASE_URL=https://your-api.com in Vercel env vars
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
-    ? import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_BASE_DEV_URL || ''
-    : '';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'
 
+console.log('API Base URL:', API_BASE_URL); // Debug log to verify the base URL at runtime
 // ─── Axios Instance ───────────────────────────────────────────────────────────
 const api = axios.create({
     baseURL: API_BASE_URL,
-    headers: {
+    headers: {                      
         'Content-Type': 'application/json',
     },
 });
