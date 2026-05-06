@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../utils/apiConfig.js';
 import useAuth from '../hooks/useAuth.js';
+import NotificationBell from '../components/NotificationBell.jsx';
 
 const ClientDashboard = () => {
   const { user, logout } = useAuth();
@@ -12,11 +13,11 @@ const ClientDashboard = () => {
     fetchJobs();
   }, []);
 
-  const config = { headers: { Authorization: `Bearer ${user.token}` } };
+  // Note: Authorization header is automatically added by the apiConfig interceptor.
 
   const fetchJobs = async () => {
     try {
-      const { data } = await axios.get('/api/jobs', config);
+      const { data } = await axios.get('/api/jobs');
       setJobs(data);
     } catch (err) { console.error('Error fetching jobs', err); }
   };
@@ -24,7 +25,7 @@ const ClientDashboard = () => {
   const handleCreateJob = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/jobs', { title, description }, config);
+      await axios.post('/api/jobs', { title, description });
       setTitle(''); setDescription('');
       alert('Job requested successfully!');
       fetchJobs();
@@ -37,6 +38,7 @@ const ClientDashboard = () => {
         <div className="nav-brand">FieldOps Client</div>
         <div className="nav-links">
           <span>{user.name}</span>
+          <NotificationBell />
           <button onClick={logout}>Logout</button>
         </div>
       </div>

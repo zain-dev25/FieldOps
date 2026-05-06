@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../utils/apiConfig.js';
 import useAuth from '../hooks/useAuth';
+import NotificationBell from '../components/NotificationBell.jsx';
 
 const TechnicianDashboard = () => {
   const { user, logout } = useAuth();
@@ -10,18 +11,18 @@ const TechnicianDashboard = () => {
     fetchJobs();
   }, []);
 
-  const config = { headers: { Authorization: `Bearer ${user.token}` } };
+  // Note: Authorization header is automatically added by the apiConfig interceptor.
 
   const fetchJobs = async () => {
     try {
-      const { data } = await axios.get('/api/jobs', config);
+      const { data } = await axios.get('/api/jobs');
       setJobs(data);
     } catch (err) { console.error('Error fetching jobs', err); }
   };
 
   const updateStatus = async (jobId, newStatus) => {
     try {
-      await axios.put(`/api/jobs/${jobId}`, { status: newStatus }, config);
+      await axios.put(`/api/jobs/${jobId}`, { status: newStatus });
       fetchJobs();
     } catch (err) {
       alert('Failed to update status');
@@ -34,6 +35,7 @@ const TechnicianDashboard = () => {
         <div className="nav-brand">FieldOps Technician</div>
         <div className="nav-links">
           <span>{user.name}</span>
+          <NotificationBell />
           <button onClick={logout}>Logout</button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../utils/apiConfig.js';
 import useAuth from '../hooks/useAuth.js';
+import NotificationBell from '../components/NotificationBell.jsx';
 
 const AdminDashboard = () => {
   const { user, logout } = useAuth();
@@ -12,25 +13,25 @@ const AdminDashboard = () => {
     fetchUsers();
   }, []);
 
-  const config = { headers: { Authorization: `Bearer ${user.token}` } };
+  // Note: Authorization header is automatically added by the apiConfig interceptor.
 
   const fetchJobs = async () => {
     try {
-      const { data } = await axios.get('/api/jobs', config);
+      const { data } = await axios.get('/api/jobs');
       setJobs(data);
     } catch (err) { console.error('Error fetching jobs', err); }
   };
 
   const fetchUsers = async () => {
     try {
-      const { data } = await axios.get('/api/users', config);
+      const { data } = await axios.get('/api/users');
       setUsers(data);
     } catch (err) { console.error('Error fetching users', err); }
   };
 
   const handleAssign = async (jobId, technicianId) => {
     try {
-      await axios.put(`/api/jobs/${jobId}`, { technician: technicianId }, config);
+      await axios.put(`/api/jobs/${jobId}`, { technician: technicianId });
       fetchJobs();
     } catch (err) { alert('Failed to assign'); }
   };
@@ -49,6 +50,7 @@ const AdminDashboard = () => {
         <div className="nav-brand">FieldOps Admin</div>
         <div className="nav-links">
           <span>{user.name}</span>
+          <NotificationBell />
           <button onClick={logout}>Logout</button>
         </div>
       </div>
