@@ -1,9 +1,11 @@
-import React, { createContext, useState, useCallback, useContext } from 'react';
+import React, { createContext, useState, useCallback, useContext, useEffect } from 'react';
 import api from '../utils/apiConfig.js';
+import useAuth from '../hooks/useAuth.js';
 
 const NotificationContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -11,17 +13,22 @@ export const NotificationProvider = ({ children }) => {
   const unreadCount = notifications.filter((n) => !n.read).length;
 
   // Fetch all notifications for the current user
-  const fetchNotifications = useCallback(async () => {
-    setLoading(true);
+  const fetchNotifications = useCallback(async (showLoading = true) => {
+    if (!user) {
+      setNotifications([]);
+      return;
+    }
+
     try {
+      if (showLoading) setLoading(true);
       const { data } = await api.get('/api/notifications');
       setNotifications(data);
     } catch (err) {
       console.error('Failed to fetch notifications:', err.response?.data?.message || err.message);
     } finally {
-      setLoading(false);
+      if (showLoading) setLoading(false);
     }
-  }, []);
+  }, [user]);
 
   // Mark a single notification as read
   const markAsRead = useCallback(async (id) => {
@@ -54,6 +61,20 @@ export const NotificationProvider = ({ children }) => {
       console.error('Failed to delete notification:', err.response?.data?.message || err.message);
     }
   }, []);
+
+  // Poll for notifications every 5 seconds while user is logged in,
+  // so new messages appear in-app without needing to open the bell.
+  useEffect(() => {
+    if (!user) {
+      setNotifications([]);
+      return;
+    }
+
+    fetchNotifications();
+    const interval = setInterval(() => fetchNotifications(false), 5000);
+
+    return () => clearInterval(interval);
+  }, [user, fetchNotifications]);
 
   return (
     <NotificationContext.Provider
